@@ -1,17 +1,20 @@
+# modules/login.py
+
 from tkinter import *
 from tkinter import messagebox
 from modules.database import get_db_connection, check_password
 
 # Fungsi untuk membuka jendela dashboard siswa/admin
-def open_dashboard(user_level, root_window):
+# Menerima root_window dan juga username
+def open_dashboard(user_level, root_window, username): # <--- TAMBAHKAN 'username' DI SINI
     root_window.withdraw() # Sembunyikan jendela root (login/register)
     
     if user_level == "siswa":
-        from modules.dashboard_siswa import open_siswa_dashboard # Path sudah benar
-        open_siswa_dashboard(root_window) 
+        from modules.dashboard_siswa import open_siswa_dashboard
+        open_siswa_dashboard(root_window, username) # <--- TERUSKAN 'username' KE SINI
     elif user_level == "admin":
-        from modules.dashboard_admin import open_admin_dashboard # Path sudah benar
-        open_admin_dashboard(root_window) 
+        from modules.dashboard_admin import open_admin_dashboard
+        open_admin_dashboard(root_window, username) # Teruskan 'username' untuk dashboard admin juga (akan kita sesuaikan nanti)
 
 # Fungsi yang akan dipanggil oleh main.py atau register.py untuk inisialisasi aplikasi login
 def LoginApp(root_window):
@@ -41,7 +44,8 @@ def LoginApp(root_window):
         if user_data:
             if check_password(user_data['password'], password):
                 messagebox.showinfo("Login Success", f"Selamat datang, {user_data['username']}!")
-                open_dashboard(user_data['level'], root_window)
+                # Panggil open_dashboard dengan user_data['username']
+                open_dashboard(user_data['level'], root_window, user_data['username']) # <--- TERUSKAN user_data['username']
             else:
                 messagebox.showerror("Login Error", "Password salah!")
         else:
@@ -49,19 +53,18 @@ def LoginApp(root_window):
 
     # Fungsi untuk berpindah ke halaman register
     def show_register_page():
-        # *** PENTING: Import RegisterApp di dalam fungsi ini (relatif) ***
-        from .register import RegisterApp # <--- PERUBAHAN DI SINI (TITIK DEPANNYA)
+        # Import RegisterApp di dalam fungsi ini untuk menghindari circular import
+        from .register import RegisterApp 
         RegisterApp(root_window) 
 
     # setting logo
     try:
-        # Path relatif terhadap main.py, jadi harus tetap assets/logo.png
         image = PhotoImage(file="assets/logo.png") 
         image = image.subsample(2, 2)
         Label(root_window, image=image, bg="white").place(x=90, y=50)
-        root_window.image_reference_login = image 
+        root_window.image_reference_login = image # Simpan referensi gambar
     except Exception as e:
-        print(f"Error loading logo.png: {e}")
+        print(f"Error loading assets/logo.png: {e}")
         Label(root_window, text="Logo", font=("Arial", 20), bg="white").place(x=90, y=50)
 
     # setting form login

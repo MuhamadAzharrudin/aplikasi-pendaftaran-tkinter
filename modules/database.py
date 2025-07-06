@@ -34,8 +34,3 @@ if __name__ == '__main__':
     print("Database 'mahasiswa.db' dan tabel 'users' berhasil dibuat/dicek.")
     conn = get_db_connection()
     cursor = conn.cursor()
-    
-    # Contoh menambahkan admin jika belum ada
-    admin_level = "admin"
-    cursor.execute("SELECT * FROM users WHERE level = ?", (admin_level,))
-    
