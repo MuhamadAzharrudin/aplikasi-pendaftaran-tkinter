@@ -7,7 +7,7 @@ root.geometry("800x400+200+100")
 root.configure(bg="#fff")
 root.resizable(False, False)
 
-def register():
+def login():
     email = user.get()
     password = code.get()
     if email == "admin" and password == "123":
@@ -73,7 +73,7 @@ code.bind("<FocusOut>", on_leave)
 Frame(frame, width=295, height=2, bg="black").place(x=25, y=170)
 
 ########################################################
-Button(frame, width=39, pady=7, text="Login", bg="#57a1f8", fg="white", border=0, command=register).place(x=25, y=210)
+Button(frame, width=39, pady=7, text="Login", bg="#57a1f8", fg="white", border=0, command=login).place(x=25, y=210)
 label = Label(frame, text="Don't have an account?", fg="black", bg="white", font=("Microsoft YaHei UI Light", 9))
 label.place(x=75, y=270)
 
