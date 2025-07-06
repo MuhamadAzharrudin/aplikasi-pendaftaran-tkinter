@@ -10,7 +10,7 @@ root.resizable(False, False)
 def register():
     email = user.get()
     password = code.get()
-    if email == "admin" or password == "123":
+    if email == "admin" and password == "123":
         screen = Toplevel(root)
         screen.title("Welcome")
         screen.geometry("800x400+200+100")
@@ -20,10 +20,15 @@ def register():
         screen.mainloop()
     elif email != "admin" and password != "123":
         messagebox.showerror("Invalid", "Invalid Email or Password")
+    elif password != "123":
+        messagebox.showerror("Invalid", "Invalid Password")
+    elif email != "admin":
+        messagebox.showerror("Invalid", "Invalid Email")
 
 #setting logo
-image = PhotoImage(file="assets/login.png") #path gambar logo
-Label(root, image=image, bg="white").place(x=50, y=10)
+image = PhotoImage(file="assets/logo.png") #path gambar logo
+image = image.subsample(2, 2)  # Resize the image if needed
+Label(root, image=image, bg="white").place(x=90, y=50)
 
 #setting form login
 frame = Frame(root, width=300, height=300, bg="white")
