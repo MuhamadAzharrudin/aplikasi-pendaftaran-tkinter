@@ -1,7 +1,7 @@
 # modules/dashboard_siswa.py
 
 from tkinter import *
-from tkinter import messagebox, filedialog # Import filedialog
+from tkinter import messagebox, filedialog 
 import customtkinter
 from tkcalendar import DateEntry 
 import os 
@@ -51,8 +51,8 @@ def open_siswa_dashboard(root_window, username):
 
 
     welcome_label = customtkinter.CTkLabel(sidebar_frame, text=f"Selamat Datang,\n{username}!", 
-                                           font=("Helvetica", 18, "bold"), text_color="white", fg_color="#093FB4",
-                                           wraplength=180, justify="center")
+                                            font=("Helvetica", 18, "bold"), text_color="white", fg_color="#093FB4",
+                                            wraplength=180, justify="center")
     welcome_label.pack(pady=(20, 30), padx=10) 
 
     menu_buttons_container = customtkinter.CTkFrame(sidebar_frame, fg_color="transparent", corner_radius=0)
@@ -68,7 +68,7 @@ def open_siswa_dashboard(root_window, username):
 
         if page_name == "dashboard":
             title_label = customtkinter.CTkLabel(content_frame, text="SELAMAT DATANG CALON SISWA BARU!",
-                                                 font=("Helvetica", 24, "bold"), text_color="#093FB4")
+                                                    font=("Helvetica", 24, "bold"), text_color="#093FB4")
             title_label.pack(pady=20)
 
             scrollable_dashboard_frame = customtkinter.CTkScrollableFrame(content_frame, fg_color="transparent")
@@ -77,8 +77,8 @@ def open_siswa_dashboard(root_window, username):
             pendaftaran_data = database.get_pendaftaran_data(username)
 
             detail_pendaftaran_card = customtkinter.CTkFrame(scrollable_dashboard_frame, 
-                                                             fg_color="white", corner_radius=10,
-                                                             border_color="#093FB4", border_width=1)
+                                                                fg_color="white", corner_radius=10,
+                                                                border_color="#093FB4", border_width=1)
             detail_pendaftaran_card.pack(fill="x", padx=10, pady=(10, 20))
 
             Label(detail_pendaftaran_card, text="Detail Pendaftaran Anda", 
@@ -114,26 +114,32 @@ def open_siswa_dashboard(root_window, username):
             Label(detail_pendaftaran_card, text="", bg="white").pack(pady=5)
 
             status_pendaftaran_card = customtkinter.CTkFrame(scrollable_dashboard_frame, 
-                                                               fg_color="white", corner_radius=10,
-                                                               border_color="#093FB4", border_width=1)
+                                                                  fg_color="white", corner_radius=10,
+                                                                  border_color="#093FB4", border_width=1)
             status_pendaftaran_card.pack(fill="x", padx=10, pady=(10, 20))
 
             Label(status_pendaftaran_card, text="Status Pendaftaran", 
                   font=("Helvetica", 16, "bold"), bg="white", fg="#333333").pack(padx=15, pady=(15, 5)) 
             
-            status_color = "#FFA500" 
+            # --- START PERBAIKAN DI SINI ---
+            status_color = "#FFA500" # Default: Oranye untuk 'Menunggu Validasi'
             status_info_text = "Mohon tunggu informasi lebih lanjut dari admin."
             
             if current_status == "Lulus":
-                status_color = "#28a745"
+                status_color = "#28a745" # Hijau
                 status_info_text = "Selamat! Anda dinyatakan LULUS. Silakan lakukan daftar ulang sesuai persyaratan."
             elif current_status == "Tidak Lulus":
-                status_color = "#dc3545"
+                status_color = "#dc3545" # Merah
                 status_info_text = "Mohon maaf, Anda dinyatakan TIDAK LULUS. Tetap semangat!"
+            elif current_status == "Ditolak": # Menambahkan kondisi ini untuk 'Ditolak'
+                status_color = "#dc3545" # Biasanya warna merah sama dengan "Tidak Lulus"
+                status_info_text = "Mohon maaf, pendaftaran Anda DITOLAK." 
             elif current_status == "Belum Mendaftar":
-                status_color = "#6c757d"
+                status_color = "#6c757d" # Abu-abu
                 status_info_text = "Anda belum mengisi formulir pendaftaran. Silakan isi di menu 'Halaman Pendaftaran'."
-
+            # Jika current_status adalah "Menunggu Validasi" atau status lain yang tidak ditangkap oleh kondisi di atas,
+            # maka akan tetap menggunakan nilai default yang telah diinisialisasi.
+            # --- AKHIR PERBAIKAN ---
 
             status_label = Label(status_pendaftaran_card, text=f"Status Anda: {current_status}",
                                   font=("Arial", 14, "bold"), bg="white", fg=status_color)
@@ -144,17 +150,21 @@ def open_siswa_dashboard(root_window, username):
 
 
             persyaratan_card = customtkinter.CTkFrame(scrollable_dashboard_frame, 
-                                                      fg_color="white", corner_radius=10,
-                                                      border_color="#093FB4", border_width=1)
+                                                       fg_color="white", corner_radius=10,
+                                                       border_color="#093FB4", border_width=1)
             persyaratan_card.pack(fill="x", padx=10, pady=(10, 20))
 
             Label(persyaratan_card, text="Persyaratan Daftar Ulang", 
                   font=("Helvetica", 16, "bold"), bg="white", fg="#333333").pack(padx=15, pady=(15, 5)) 
             
             persyaratan_text = """Siswa yang telah dinyatakan lulus wajib melakukan daftar ulang dengan membawa:
+            
 1. Fotocopy akta kelahiran (1 lembar)
+
 2. Fotocopy kartu keluarga (1 lembar)
+
 3. Fotocopy nilai ujian sekolah dan nilai ujian nasional (1 lembar)
+
 4. Bukti pendaftaran online (dapat diunduh pada menu bukti pendaftaran)
 """ 
             Label(persyaratan_card, text=persyaratan_text, justify="left", wraplength=550,
@@ -162,19 +172,19 @@ def open_siswa_dashboard(root_window, username):
 
         elif page_name == "halaman_pendaftaran":
             title_label = customtkinter.CTkLabel(content_frame, text="FORM PENDAFTARAN",
-                                                 font=("Helvetica", 24, "bold"), text_color="#093FB4")
+                                                    font=("Helvetica", 24, "bold"), text_color="#093FB4")
             title_label.pack(pady=(20, 5))
 
             description_label = customtkinter.CTkLabel(content_frame, text="Silakan isi data diri Anda untuk melanjutkan pendaftaran.",
-                                                       font=("Arial", 12), text_color="#333333")
+                                                        font=("Arial", 12), text_color="#333333")
             description_label.pack(pady=(0, 20))
 
             scrollable_form_frame = customtkinter.CTkScrollableFrame(content_frame, fg_color="transparent")
             scrollable_form_frame.pack(fill="both", expand=True, padx=10, pady=5)
 
             form_card = customtkinter.CTkFrame(scrollable_form_frame, 
-                                               fg_color="white", corner_radius=10,
-                                               border_color="#093FB4", border_width=1)
+                                                fg_color="white", corner_radius=10,
+                                                border_color="#093FB4", border_width=1)
             form_card.pack(fill="x", padx=20, pady=10)
 
             def submit_registration():
@@ -225,7 +235,7 @@ def open_siswa_dashboard(root_window, username):
                 frame.grid_columnconfigure(1, weight=1) 
 
                 label = customtkinter.CTkLabel(frame, text=label_text, font=("Arial", 11, "bold"), text_color="#333333",
-                                               width=label_width, anchor="w") 
+                                                width=label_width, anchor="w") 
                 label.grid(row=0, column=0, sticky="w", padx=(0, 10)) 
 
                 if is_date_entry:
@@ -233,17 +243,17 @@ def open_siswa_dashboard(root_window, username):
                     date_frame.grid(row=0, column=1, sticky="ew") 
 
                     date_entry_widget = DateEntry(date_frame, selectmode='day', font=("Arial", 11),
-                                                  date_pattern='dd-mm-yyyy', background="#2074B4", 
-                                                  foreground="white", bordercolor="#093FB4",
-                                                  headersbackground="#093FB4", headersforeground="white",
-                                                  normalbackground="white", normalforeground="black")
+                                                    date_pattern='dd-mm-yyyy', background="#2074B4", 
+                                                    foreground="white", bordercolor="#093FB4",
+                                                    headersbackground="#093FB4", headersforeground="white",
+                                                    normalbackground="white", normalforeground="black")
                     date_entry_widget.pack(fill="x", expand=True) 
                     return date_entry_widget 
 
                 else:
                     entry = customtkinter.CTkEntry(frame, font=("Arial", 11), 
-                                                   fg_color="#f0f0f0", text_color="#333333",
-                                                   border_color="#cccccc", border_width=1, corner_radius=5)
+                                                    fg_color="#f0f0f0", text_color="#333333",
+                                                    border_color="#cccccc", border_width=1, corner_radius=5)
                     entry.grid(row=0, column=1, sticky="ew") 
                     return entry
 
@@ -275,23 +285,23 @@ def open_siswa_dashboard(root_window, username):
             dashboard_siswa_window.after(100, load_existing_pendaftaran_data)
 
             register_btn = customtkinter.CTkButton(form_card, text="Daftar", font=("Arial", 14, "bold"),
-                                                   fg_color="#093FB4", text_color="white", 
-                                                   hover_color="#07308D", corner_radius=10,
-                                                   command=submit_registration, cursor="hand2")
+                                                    fg_color="#093FB4", text_color="white", 
+                                                    hover_color="#07308D", corner_radius=10,
+                                                    command=submit_registration, cursor="hand2")
             register_btn.pack(pady=(20, 15), padx=15, fill="x") 
             
         elif page_name == "bukti_pendaftaran":
             title_label = customtkinter.CTkLabel(content_frame, text="UNDUH BUKTI PENDAFTARAN",
-                                                 font=("Helvetica", 24, "bold"), text_color="#093FB4")
+                                                    font=("Helvetica", 24, "bold"), text_color="#093FB4")
             title_label.pack(pady=(20, 5))
 
             description_label = customtkinter.CTkLabel(content_frame, text="Unduh bukti pendaftaran sebagai syarat daftar ulang.",
-                                                       font=("Arial", 12), text_color="#333333")
+                                                        font=("Arial", 12), text_color="#333333")
             description_label.pack(pady=(0, 20))
 
             bukti_card = customtkinter.CTkFrame(content_frame, 
-                                                 fg_color="white", corner_radius=10,
-                                                 border_color="#093FB4", border_width=1)
+                                                    fg_color="white", corner_radius=10,
+                                                    border_color="#093FB4", border_width=1)
             bukti_card.pack(fill="x", padx=20, pady=10)
 
             bukti_content_frame = customtkinter.CTkFrame(bukti_card, fg_color="transparent")
@@ -301,7 +311,7 @@ def open_siswa_dashboard(root_window, username):
             bukti_content_frame.grid_columnconfigure(1, weight=0) 
 
             file_name_label = customtkinter.CTkLabel(bukti_content_frame, text="Bukti_Pendaftaran_Siswa.pdf",
-                                                     font=("Arial", 12, "bold"), text_color="#333333")
+                                                        font=("Arial", 12, "bold"), text_color="#333333")
             file_name_label.grid(row=0, column=0, sticky="w", padx=(0, 10))
 
             def download_bukti():
@@ -337,9 +347,9 @@ def open_siswa_dashboard(root_window, username):
 
 
             download_btn = customtkinter.CTkButton(bukti_content_frame, text="Unduh", font=("Arial", 12, "bold"),
-                                                   fg_color="#28a745", text_color="white", 
-                                                   hover_color="#218838", corner_radius=5,
-                                                   command=download_bukti, cursor="hand2")
+                                                    fg_color="#28a745", text_color="white", 
+                                                    hover_color="#218838", corner_radius=5,
+                                                    command=download_bukti, cursor="hand2")
             download_btn.grid(row=0, column=1, sticky="e")
             
     button_font = ("Arial", 12)
@@ -349,27 +359,27 @@ def open_siswa_dashboard(root_window, username):
     button_corner_radius = 10 
 
     dashboard_btn = customtkinter.CTkButton(menu_buttons_container, text="Dashboard", font=button_font, 
-                                            fg_color=button_fg_color, text_color=button_text_color, 
-                                            hover_color=button_hover_color, corner_radius=button_corner_radius,
-                                            command=lambda: show_page("dashboard"), cursor="hand2")
+                                             fg_color=button_fg_color, text_color=button_text_color, 
+                                             hover_color=button_hover_color, corner_radius=button_corner_radius,
+                                             command=lambda: show_page("dashboard"), cursor="hand2")
     dashboard_btn.pack(pady=(50, 15), padx=10, fill="x") 
 
     halaman_pendaftaran_btn = customtkinter.CTkButton(menu_buttons_container, text="Halaman Pendaftaran", font=button_font, 
-                                                      fg_color=button_fg_color, text_color=button_text_color, 
-                                                      hover_color=button_hover_color, corner_radius=button_corner_radius,
-                                                      command=lambda: show_page("halaman_pendaftaran"), cursor="hand2")
+                                                       fg_color=button_fg_color, text_color=button_text_color, 
+                                                       hover_color=button_hover_color, corner_radius=button_corner_radius,
+                                                       command=lambda: show_page("halaman_pendaftaran"), cursor="hand2")
     halaman_pendaftaran_btn.pack(pady=15, padx=10, fill="x")
 
     bukti_pendaftaran_btn = customtkinter.CTkButton(menu_buttons_container, text="Bukti Pendaftaran", font=button_font, 
-                                                    fg_color=button_fg_color, text_color=button_text_color, 
-                                                    hover_color=button_hover_color, corner_radius=button_corner_radius,
-                                                    command=lambda: show_page("bukti_pendaftaran"), cursor="hand2")
+                                                     fg_color=button_fg_color, text_color=button_text_color, 
+                                                     hover_color=button_hover_color, corner_radius=button_corner_radius,
+                                                     command=lambda: show_page("bukti_pendaftaran"), cursor="hand2")
     bukti_pendaftaran_btn.pack(pady=15, padx=10, fill="x")
 
     logout_btn = customtkinter.CTkButton(logout_button_container, text="Logout", font=button_font, 
-                                         fg_color="red", text_color="white", hover_color="#cc0000", 
-                                         corner_radius=button_corner_radius,
-                                         command=logout, cursor="hand2")
+                                          fg_color="red", text_color="white", hover_color="#cc0000", 
+                                          corner_radius=button_corner_radius,
+                                          command=logout, cursor="hand2")
     logout_btn.pack(padx=10, fill="x")
 
     show_page("dashboard") 
