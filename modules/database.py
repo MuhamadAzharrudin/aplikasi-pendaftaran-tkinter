@@ -42,6 +42,15 @@ def create_tables():
             FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
         )
     ''')
+    
+    # --- START Penambahan Kode untuk jenis_kelamin ---
+    # Cek apakah kolom jenis_kelamin sudah ada di tabel pendaftar
+    cursor.execute("PRAGMA table_info(pendaftar)")
+    columns = [col[1] for col in cursor.fetchall()]
+    if 'jenis_kelamin' not in columns:
+        cursor.execute("ALTER TABLE pendaftar ADD COLUMN jenis_kelamin TEXT")
+    # --- END Penambahan Kode untuk jenis_kelamin ---
+
     conn.commit()
     conn.close()
 
@@ -91,9 +100,11 @@ def save_pendaftaran_data(username, data):
     existing_data = cursor.fetchone()
 
     if existing_data:
+        # --- START Penambahan Kode untuk jenis_kelamin ---
         cursor.execute('''
             UPDATE pendaftar SET
                 nama_lengkap = ?,
+                jenis_kelamin = ?, 
                 tempat_lahir = ?,
                 tanggal_lahir = ?,
                 asal_sekolah = ?,
@@ -102,20 +113,23 @@ def save_pendaftaran_data(username, data):
                 nilai_ujian_nasional = ?,
                 status_pendaftaran = 'Menunggu Verifikasi'
             WHERE username = ?
-        ''', (data['nama_lengkap'], data['tempat_lahir'], data['tanggal_lahir'],
+        ''', (data['nama_lengkap'], data['jenis_kelamin'], data['tempat_lahir'], data['tanggal_lahir'],
               data['asal_sekolah'], data['nomor_hp'], data['nilai_ujian_sekolah'],
               data['nilai_ujian_nasional'], username))
+        # --- END Penambahan Kode untuk jenis_kelamin ---
         message = "Data pendaftaran berhasil diperbarui."
     else:
+        # --- START Penambahan Kode untuk jenis_kelamin ---
         cursor.execute('''
             INSERT INTO pendaftar (
-                username, nama_lengkap, tempat_lahir, tanggal_lahir,
+                username, nama_lengkap, jenis_kelamin, tempat_lahir, tanggal_lahir,
                 asal_sekolah, nomor_hp, nilai_ujian_sekolah, nilai_ujian_nasional,
                 status_pendaftaran
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (username, data['nama_lengkap'], data['tempat_lahir'], data['tanggal_lahir'],
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (username, data['nama_lengkap'], data['jenis_kelamin'], data['tempat_lahir'], data['tanggal_lahir'],
               data['asal_sekolah'], data['nomor_hp'], data['nilai_ujian_sekolah'],
               data['nilai_ujian_nasional'], 'Menunggu Verifikasi'))
+        # --- END Penambahan Kode untuk jenis_kelamin ---
         message = "Data pendaftaran berhasil disimpan."
     
     conn.commit()
@@ -126,13 +140,17 @@ def get_pendaftaran_data(username):
     """Mengambil data pendaftaran siswa berdasarkan username."""
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT nama_lengkap, tempat_lahir, tanggal_lahir, asal_sekolah, nomor_hp, nilai_ujian_sekolah, nilai_ujian_nasional, status_pendaftaran FROM pendaftar WHERE username = ?", (username,))
+    # --- START Penambahan Kode untuk jenis_kelamin ---
+    cursor.execute("SELECT nama_lengkap, jenis_kelamin, tempat_lahir, tanggal_lahir, asal_sekolah, nomor_hp, nilai_ujian_sekolah, nilai_ujian_nasional, status_pendaftaran FROM pendaftar WHERE username = ?", (username,))
+    # --- END Penambahan Kode untuk jenis_kelamin ---
     row = cursor.fetchone()
     conn.close()
 
     if row:
+        # --- START Penambahan Kode untuk jenis_kelamin ---
         return {
             "nama_lengkap": row["nama_lengkap"],
+            "jenis_kelamin": row["jenis_kelamin"], 
             "tempat_lahir": row["tempat_lahir"],
             "tanggal_lahir": row["tanggal_lahir"],
             "asal_sekolah": row["asal_sekolah"],
@@ -141,6 +159,7 @@ def get_pendaftaran_data(username):
             "nilai_ujian_nasional": row["nilai_ujian_nasional"],
             "status_pendaftaran": row["status_pendaftaran"]
         }
+        # --- END Penambahan Kode untuk jenis_kelamin ---
     return None
 
 def generate_bukti_pendaftaran_pdf(filepath, username, pendaftaran_data):
@@ -254,14 +273,17 @@ def generate_bukti_pendaftaran_pdf(filepath, username, pendaftaran_data):
         story.append(Spacer(1, 0.1 * inch))
 
         # --- Data Pendaftaran dalam Tabel ---
+        # --- START Penambahan Kode untuk jenis_kelamin ---
         data = [
             ["NAMA LENGKAP", pendaftaran_data.get("nama_lengkap", "Belum Diisi")],
+            ["JENIS KELAMIN", pendaftaran_data.get("jenis_kelamin", "Belum Diisi")], # Tambahkan ini
             ["TEMPAT, TANGGAL LAHIR", f"{pendaftaran_data.get('tempat_lahir', 'Belum Diisi')}, {pendaftaran_data.get('tanggal_lahir', 'Belum Diisi')}"],
             ["ASAL SEKOLAH", pendaftaran_data.get("asal_sekolah", "Belum Diisi")],
             ["NOMOR HP", pendaftaran_data.get("nomor_hp", "Belum Diisi")],
             ["NILAI UJIAN SEKOLAH", pendaftaran_data.get("nilai_ujian_sekolah", "Belum Diisi")],
             ["NILAI UJIAN NASIONAL", pendaftaran_data.get("nilai_ujian_nasional", "Belum Diisi")]
         ]
+        # --- END Penambahan Kode untuk jenis_kelamin ---
 
         table_style = TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#ADC4F4")),

@@ -1,10 +1,18 @@
 # modules/dashboard_admin.py
 
 from tkinter import *
-from tkinter import messagebox
+from tkinter import messagebox, filedialog 
 from tkinter import ttk
 import customtkinter
 import os 
+from datetime import datetime
+import csv 
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer # Import Spacer
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle # Import ParagraphStyle
+from reportlab.lib.enums import TA_CENTER # Import TA_CENTER for alignment
+
 
 # Import modul database yang sudah ada
 from . import database 
@@ -57,13 +65,13 @@ def open_admin_dashboard(root_window, username):
     title_bar_frame.pack(pady=(20, 10), padx=10, fill="x")
 
     title_label = customtkinter.CTkLabel(title_bar_frame, text="DASHBOARD ADMIN",
-                                            font=("Helvetica", 20, "bold"), text_color="white",
-                                            wraplength=200, justify="center")
+                                         font=("Helvetica", 20, "bold"), text_color="white",
+                                         wraplength=200, justify="center")
     title_label.pack(expand=True)
 
     welcome_label = customtkinter.CTkLabel(sidebar_frame, text=f"Selamat Datang,\n{username}!",
-                                            font=("Helvetica", 16), text_color="white", 
-                                            wraplength=180, justify="center")
+                                         font=("Helvetica", 16), text_color="white", 
+                                         wraplength=180, justify="center")
     welcome_label.pack(pady=(10, 30), padx=10)
 
     menu_buttons_container = customtkinter.CTkFrame(sidebar_frame, fg_color="transparent", corner_radius=0)
@@ -79,7 +87,7 @@ def open_admin_dashboard(root_window, username):
 
         if page_name == "dashboard":
             title_label = customtkinter.CTkLabel(content_frame, text="DATA PENDAFTAR CALON SISWA BARU",
-                                                    font=("Helvetica", 24, "bold"), text_color="#093FB4")
+                                                 font=("Helvetica", 24, "bold"), text_color="#093FB4")
             title_label.pack(pady=20)
             
             # Mendapatkan data dari database
@@ -91,13 +99,13 @@ def open_admin_dashboard(root_window, username):
             card_frame_top.pack(fill="x", padx=20, pady=10)
             
             card_pendaftar_masuk = customtkinter.CTkFrame(card_frame_top, fg_color="white", corner_radius=10,
-                                                           border_color="#2196F3", border_width=2) # Biru untuk pendaftar masuk
+                                                          border_color="#2196F3", border_width=2) # Biru untuk pendaftar masuk
             card_pendaftar_masuk.pack(side="left", fill="both", expand=True, padx=(0, 10))
 
             customtkinter.CTkLabel(card_pendaftar_masuk, text="PENDAFTAR MASUK",
-                                    font=("Helvetica", 16, "bold"), text_color="#2196F3").pack(pady=(15, 5))
+                                   font=("Helvetica", 16, "bold"), text_color="#2196F3").pack(pady=(15, 5))
             customtkinter.CTkLabel(card_pendaftar_masuk, text=f"{total_pendaftar} Orang",
-                                    font=("Helvetica", 28, "bold"), text_color="#333333").pack(pady=(0, 10))
+                                   font=("Helvetica", 28, "bold"), text_color="#333333").pack(pady=(0, 10))
             
             progress_bar_pendaftar = customtkinter.CTkProgressBar(card_pendaftar_masuk, fg_color="#e0e0e0", progress_color="#2196F3")
             progress_bar_pendaftar.pack(fill="x", padx=15, pady=(0, 15))
@@ -109,9 +117,9 @@ def open_admin_dashboard(root_window, username):
             card_lolos_seleksi.pack(side="right", fill="both", expand=True, padx=(10, 0))
 
             customtkinter.CTkLabel(card_lolos_seleksi, text="LOLOS SELEKSI",
-                                    font=("Helvetica", 16, "bold"), text_color="#4CAF50").pack(pady=(15, 5))
+                                   font=("Helvetica", 16, "bold"), text_color="#4CAF50").pack(pady=(15, 5))
             customtkinter.CTkLabel(card_lolos_seleksi, text=f"{len(pendaftar_lolos)} Orang",
-                                    font=("Helvetica", 28, "bold"), text_color="#333333").pack(pady=(0, 10))
+                                   font=("Helvetica", 28, "bold"), text_color="#333333").pack(pady=(0, 10))
 
             progress_bar_lolos = customtkinter.CTkProgressBar(card_lolos_seleksi, fg_color="#e0e0e0", progress_color="#4CAF50")
             progress_bar_lolos.pack(fill="x", padx=15, pady=(0, 15))
@@ -122,7 +130,7 @@ def open_admin_dashboard(root_window, username):
 
             # Bagian Data Pendaftar yang Masuk (Tabel)
             data_pendaftar_label = customtkinter.CTkLabel(content_frame, text="Data Pendaftar yang Masuk:",
-                                                           font=("Helvetica", 16, "bold"), text_color="#333333")
+                                                          font=("Helvetica", 16, "bold"), text_color="#333333")
             data_pendaftar_label.pack(pady=(20, 10), anchor="w", padx=20)
 
             style = ttk.Style()
@@ -177,7 +185,7 @@ def open_admin_dashboard(root_window, username):
                     nilai_un = pendaftar.get("nilai_ujian_nasional", 0.0)
                     nilai_us = pendaftar.get("nilai_ujian_sekolah", 0.0)
                     
-                    rata_rata = (nilai_un + nilai_us) / 2 if (nilai_un and nilai_us) else 0.0
+                    rata_rata = (nilai_un + nilai_us) / 2 if (nilai_un is not None and nilai_us is not None) else 0.0
                     status = pendaftar.get("status_pendaftaran", "Belum Validasi")
                     
                     # Menyesuaikan teks status
@@ -205,7 +213,7 @@ def open_admin_dashboard(root_window, username):
 
         elif page_name == "validasi_data":
             title_label = customtkinter.CTkLabel(content_frame, text="VALIDASI DATA PENDAFTAR",
-                                                    font=("Helvetica", 24, "bold"), text_color="#093FB4")
+                                                 font=("Helvetica", 24, "bold"), text_color="#093FB4")
             title_label.pack(pady=20)
             
             style = ttk.Style()
@@ -362,41 +370,246 @@ def open_admin_dashboard(root_window, username):
             button_frame.pack(pady=10)
 
             validate_btn = customtkinter.CTkButton(button_frame, text="LULUSKAN (Terpilih)",
-                                                    fg_color="green", hover_color="#006400",
-                                                    command=lambda: update_selected_status("Lulus"), cursor="hand2")
+                                                   fg_color="green", hover_color="#006400",
+                                                   command=lambda: update_selected_status("Lulus"), cursor="hand2")
             validate_btn.pack(side="left", padx=10)
 
             reject_btn = customtkinter.CTkButton(button_frame, text="TOLAK (Terpilih)",
-                                                    fg_color="red", hover_color="#8B0000",
-                                                    command=lambda: update_selected_status("Ditolak"), cursor="hand2")
+                                                   fg_color="red", hover_color="#8B0000",
+                                                   command=lambda: update_selected_status("Ditolak"), cursor="hand2")
             reject_btn.pack(side="left", padx=10)
 
             delete_btn = customtkinter.CTkButton(button_frame, text="HAPUS (Terpilih)",
-                                                    fg_color="darkred", hover_color="#8B0000",
-                                                    command=delete_selected_pendaftar, cursor="hand2")
+                                                   fg_color="darkred", hover_color="#8B0000",
+                                                   command=delete_selected_pendaftar, cursor="hand2")
             delete_btn.pack(side="left", padx=10)
 
             refresh_btn = customtkinter.CTkButton(button_frame, text="Refresh Data",
-                                                    fg_color="#578FCA", hover_color="#3674B5",
-                                                    command=load_pendaftar_data, cursor="hand2")
+                                                   fg_color="#578FCA", hover_color="#3674B5",
+                                                   command=load_pendaftar_data, cursor="hand2")
             refresh_btn.pack(side="left", padx=10)
             
             
         elif page_name == "laporan":
             title_label = customtkinter.CTkLabel(content_frame, text="LAPORAN PENDAFTARAN",
-                                                    font=("Helvetica", 24, "bold"), text_color="#093FB4")
+                                                 font=("Helvetica", 24, "bold"), text_color="#093FB4")
             title_label.pack(pady=20)
 
-            customtkinter.CTkLabel(content_frame, text="Halaman ini akan menampilkan laporan pendaftaran siswa.",
-                                    font=("Arial", 16), text_color="#333333").pack(pady=10)
-            customtkinter.CTkLabel(content_frame, text="Fitur filter dan generate PDF/Excel akan ditambahkan di sini.",
-                                    font=("Arial", 12), text_color="#666666").pack(pady=5)
+            style = ttk.Style()
+            style.theme_use("clam")
+            style.configure("Treeview.Heading", font=("Arial", 10, "bold"), background="#093FB4", foreground="white")
+            style.configure("Treeview", font=("Arial", 10), rowheight=25)
+            style.map("Treeview", background=[('selected', '#578FCA')])
+
+            tree_frame = customtkinter.CTkFrame(content_frame, fg_color="transparent")
+            tree_frame.pack(fill="both", expand=True, padx=20, pady=10)
+
+            tree_scroll_y = Scrollbar(tree_frame, orient="vertical")
+            tree_scroll_y.pack(side="right", fill="y")
+            tree_scroll_x = Scrollbar(tree_frame, orient="horizontal")
+            tree_scroll_x.pack(side="bottom", fill="x")
+
+            tree = ttk.Treeview(tree_frame, yscrollcommand=tree_scroll_y.set, xscrollcommand=tree_scroll_x.set, selectmode="browse") 
+            tree.pack(fill="both", expand=True)
+
+            tree_scroll_y.config(command=tree.yview)
+            tree_scroll_x.config(command=tree.xview)
+
+            tree["columns"] = ("No", "Nama", "Jenis Kelamin", "Nilai UN", "Nilai US", "Rata-Rata", "Status")
+            tree.column("#0", width=0, stretch=NO) 
+            tree.column("No", anchor=CENTER, width=40)
+            tree.column("Nama", anchor=W, width=180) 
+            tree.column("Jenis Kelamin", anchor=CENTER, width=100)
+            tree.column("Nilai UN", anchor=CENTER, width=90)
+            tree.column("Nilai US", anchor=CENTER, width=90)
+            tree.column("Rata-Rata", anchor=CENTER, width=100)
+            tree.column("Status", anchor=CENTER, width=120)
+
+            tree.heading("#0", text="", anchor=CENTER)
+            tree.heading("No", text="No", anchor=CENTER)
+            tree.heading("Nama", text="Nama", anchor=CENTER)
+            tree.heading("Jenis Kelamin", text="Jenis Kelamin", anchor=CENTER)
+            tree.heading("Nilai UN", text="Nilai UN", anchor=CENTER)
+            tree.heading("Nilai US", text="Nilai US", anchor=CENTER)
+            tree.heading("Rata-Rata", text="Rata-Rata", anchor=CENTER)
+            tree.heading("Status", text="Status", anchor=CENTER)
+
+            def load_report_data():
+                for item in tree.get_children():
+                    tree.delete(item)
+                
+                # Mengambil semua data pendaftar
+                all_pendaftar_data = database.get_all_pendaftar_data()
+
+                # Pisahkan data berdasarkan status
+                lolos_seleksi = [p for p in all_pendaftar_data if p.get("status_pendaftaran") == "Lulus"]
+                tidak_lolos = [p for p in all_pendaftar_data if p.get("status_pendaftaran") == "Tidak Lulus"]
+                belum_validasi = [p for p in all_pendaftar_data if p.get("status_pendaftaran") == "Menunggu Validasi" or p.get("status_pendaftaran") == "Belum Validasi"]
+                ditolak_admin = [p for p in all_pendaftar_data if p.get("status_pendaftaran") == "Ditolak"]
+
+                # Urutkan berdasarkan status: Lulus, Tidak Lulus, Belum Validasi, Ditolak
+                sorted_pendaftar = lolos_seleksi + tidak_lolos + belum_validasi + ditolak_admin
+                
+                for i, pendaftar in enumerate(sorted_pendaftar):
+                    nama = pendaftar.get("nama_lengkap", "N/A")
+                    jenis_kelamin = pendaftar.get("jenis_kelamin", "N/A")
+                    nilai_un = pendaftar.get("nilai_ujian_nasional", 0.0)
+                    nilai_us = pendaftar.get("nilai_ujian_sekolah", 0.0)
+                    
+                    rata_rata = (nilai_un + nilai_us) / 2 if (nilai_un is not None and nilai_us is not None) else 0.0
+                    status = pendaftar.get("status_pendaftaran", "Belum Validasi")
+
+                    # Menyesuaikan teks status untuk laporan
+                    display_status = status 
+                    if status == "Menunggu Validasi":
+                        display_status = "Belum Divalidasi"
+                    elif status == "Lulus":
+                        display_status = "Lolos Seleksi"
+                    elif status == "Tidak Lulus":
+                        display_status = "Tidak Lolos"
+                    elif status == "Ditolak":
+                        display_status = "Ditolak Admin"
+
+                    tree.insert("", END, values=(
+                        i + 1, 
+                        nama, 
+                        jenis_kelamin, 
+                        nilai_un, 
+                        nilai_us, 
+                        f"{rata_rata:.2f}", 
+                        display_status
+                    ))
             
-            generate_report_btn = customtkinter.CTkButton(content_frame, text="Generate Laporan (PDF)",
-                                                            fg_color="#093FB4", hover_color="#07308D",
-                                                            command=lambda: messagebox.showinfo("Info", "Fitur generate laporan akan datang!"),
-                                                            cursor="hand2")
-            generate_report_btn.pack(pady=20)
+            load_report_data()
+
+            def export_data_to_csv():
+                # Mengubah nama file default
+                initial_filename = f"Laporan_pendaftaran_2025.csv"
+                file_path = filedialog.asksaveasfilename(
+                    defaultextension=".csv",
+                    initialfile=initial_filename,
+                    filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
+                    title="Simpan Laporan Pendaftar (CSV)"
+                )
+
+                if file_path: # Jika user memilih lokasi dan nama file
+                    try:
+                        with open(file_path, 'w', newline='', encoding='utf-8') as file:
+                            writer = csv.writer(file)
+                            # Write header
+                            header = [tree.heading(col)["text"] for col in tree["columns"]]
+                            writer.writerow(header)
+                            # Write data
+                            for item_id in tree.get_children():
+                                writer.writerow(tree.item(item_id, "values"))
+                        messagebox.showinfo("Ekspor Berhasil", f"Data berhasil diekspor ke:\n{file_path}")
+                    except Exception as e:
+                        messagebox.showerror("Ekspor Gagal", f"Terjadi kesalahan saat mengekspor data CSV: {e}")
+                else:
+                    messagebox.showinfo("Ekspor Dibatalkan", "Ekspor CSV dibatalkan.")
+
+
+            def export_data_to_pdf():
+                # Mengubah nama file default
+                initial_filename = f"Laporan_pendaftaran_2025.pdf"
+                file_path = filedialog.asksaveasfilename(
+                    defaultextension=".pdf",
+                    initialfile=initial_filename,
+                    filetypes=[("PDF files", "*.pdf"), ("All files", "*.*")],
+                    title="Simpan Laporan Pendaftar (PDF)"
+                )
+
+                if file_path: # Jika user memilih lokasi dan nama file
+                    doc = SimpleDocTemplate(file_path, pagesize=letter) 
+                    styles = getSampleStyleSheet()
+                    
+                    # Custom style for header
+                    header_style_title = ParagraphStyle(
+                        name='HeaderTitle',
+                        parent=styles['h2'], # Inherit from h2 for size
+                        fontName='Helvetica-Bold',
+                        fontSize=16,
+                        alignment=TA_CENTER,
+                        spaceAfter=6
+                    )
+                    header_style_subtitle = ParagraphStyle(
+                        name='HeaderSubtitle',
+                        parent=styles['h3'], # Inherit from h3 for size
+                        fontName='Helvetica-Bold',
+                        fontSize=12,
+                        alignment=TA_CENTER,
+                        spaceAfter=4
+                    )
+                    header_style_address = ParagraphStyle(
+                        name='HeaderAddress',
+                        parent=styles['Normal'],
+                        fontName='Helvetica',
+                        fontSize=10,
+                        alignment=TA_CENTER,
+                        spaceAfter=12
+                    )
+
+                    elements = []
+
+                    # Add header content
+                    elements.append(Paragraph("LAPORAN PENDAFTARAN CALON PESERTA DIDIK BARU", header_style_title))
+                    elements.append(Paragraph("SMA NEGERI 1 AIKMEL", header_style_subtitle))
+                    elements.append(Paragraph("Jalan Pendidikan Nomor 88 Kec. Aikmel, Kab. Lombok Timur", header_style_address))
+                    elements.append(Spacer(1, 12)) # Add some space after header
+
+                    data = []
+                    # Add table header
+                    header_table = [Paragraph(tree.heading(col)["text"], styles['h5']) for col in tree["columns"]]
+                    data.append(header_table)
+                    
+                    # Add data rows
+                    for item_id in tree.get_children():
+                        row_values = tree.item(item_id, "values")
+                        data.append([Paragraph(str(val), styles['Normal']) for val in row_values])
+
+                    # Table style
+                    table_style = TableStyle([
+                        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#093FB4")),
+                        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+                        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                        ('FONTSIZE', (0,0), (-1,-1), 8), # Smaller font size for data
+                    ])
+
+                    # Apply alternating row colors
+                    for i in range(1, len(data)):
+                        if i % 2 == 0:
+                            table_style.add('BACKGROUND', (0, i), (-1, i), colors.HexColor("#f0f0f0"))
+
+                    table = Table(data)
+                    table.setStyle(table_style)
+                    elements.append(table) # Add the table to the elements list
+
+                    try:
+                        doc.build(elements) # Build the document with all elements
+                        messagebox.showinfo("Ekspor Berhasil", f"Data berhasil diekspor ke:\n{file_path}")
+                    except Exception as e:
+                        messagebox.showerror("Ekspor Gagal", f"Terjadi kesalahan saat mengekspor data PDF: {e}")
+                else:
+                    messagebox.showinfo("Ekspor Dibatalkan", "Ekspor PDF dibatalkan.")
+
+
+            report_buttons_frame = customtkinter.CTkFrame(content_frame, fg_color="transparent")
+            report_buttons_frame.pack(pady=10)
+
+            cetak_data_btn = customtkinter.CTkButton(report_buttons_frame, text="Cetak Data Pendaftar (PDF)",
+                                                    fg_color="#E67E22", hover_color="#D35400",
+                                                    command=export_data_to_pdf, cursor="hand2")
+            cetak_data_btn.pack(side="left", padx=5)
+
+            export_csv_btn = customtkinter.CTkButton(report_buttons_frame, text="Export ke CSV",
+                                                    fg_color="#27AE60", hover_color="#229954",
+                                                    command=export_data_to_csv, cursor="hand2")
+            export_csv_btn.pack(side="left", padx=5)
+
 
     button_font = ("Arial", 12)
     button_fg_color = "#578FCA"
@@ -435,34 +648,3 @@ if __name__ == '__main__':
     # Pastikan database telah diinisialisasi
     database.create_tables() 
     
-    # Buat user admin jika belum ada untuk pengujian
-    if not database.get_user_by_username("admin_test"):
-        database.register_user("admin@example.com", "admin_test", "adminpass", user_type="admin")
-    
-    # Tambahkan beberapa data pendaftar dummy jika belum ada
-    if not database.get_all_pendaftar_data():
-        database.register_user("muhammadazha@example.com", "muhammadazha", "password123")
-        database.save_pendaftaran_data("muhammadazha", {
-            "nama_lengkap": "Muhamad Azharrudin",
-            "tempat_lahir": "Toya Daya",
-            "tanggal_lahir": "2007-01-15",
-            "asal_sekolah": "SMP Negeri 1 Aikmel",
-            "nomor_hp": "081234567890",
-            "nilai_ujian_sekolah": 89.0,
-            "nilai_ujian_nasional": 90.0
-        })
-        
-        database.register_user("nurhamid@example.com", "nurhamid", "password456")
-        database.save_pendaftaran_data("nurhamid", {
-            "nama_lengkap": "Nur Hamid",
-            "tempat_lahir": "Sambelia",
-            "tanggal_lahir": "2006-11-20",
-            "asal_sekolah": "Smk negeri 1 sambelia",
-            "nomor_hp": "087654321098",
-            "nilai_ujian_sekolah": 98.0,
-            "nilai_ujian_nasional": 90.0
-        })
-
-    root_test_direct = Tk()
-    open_admin_dashboard(root_test_direct, "admin_test") 
-    root_test_direct.mainloop()
