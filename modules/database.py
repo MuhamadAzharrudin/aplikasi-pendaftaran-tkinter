@@ -300,6 +300,32 @@ def generate_bukti_pendaftaran_pdf(filepath, username, pendaftaran_data):
     except Exception as e:
         print(f"Error generating PDF: {e}")
         return False
+    
+def get_total_pendaftar():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM pendaftar")
+    total = cursor.fetchone()[0]
+    conn.close()
+    return total
+
+def get_pendaftar_by_status(status):
+    conn = get_db_connection()
+    conn.row_factory = sqlite3.Row # Agar bisa akses kolom by nama
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM pendaftar WHERE status_pendaftaran = ?", (status,))
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows] # Mengembalikan list of dictionaries
+
+def get_all_pendaftar_data():
+    conn = get_db_connection()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM pendaftar")
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
 
 if __name__ == '__main__':
     create_tables()
