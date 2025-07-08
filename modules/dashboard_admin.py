@@ -153,11 +153,12 @@ def open_admin_dashboard(root_window, username):
             tree_scroll_y.config(command=tree.yview)
             tree_scroll_x.config(command=tree.xview)
 
-            tree["columns"] = ("No", "Nama", "Alamat", "Nilai UN", "Nilai US", "Rata-Rata", "Status")
+            tree["columns"] = ("No", "Nama", "Alamat", "Jenis Kelamin", "Nilai UN", "Nilai US", "Rata-Rata", "Status")
             tree.column("#0", width=0, stretch=NO) 
             tree.column("No", anchor=CENTER, width=40)
             tree.column("Nama", anchor=W, width=150) 
             tree.column("Alamat", anchor=W, width=250) # Untuk alamat lebih luas
+            tree.column("Jenis Kelamin", anchor=CENTER, width=100)
             tree.column("Nilai UN", anchor=CENTER, width=80)
             tree.column("Nilai US", anchor=CENTER, width=80)
             tree.column("Rata-Rata", anchor=CENTER, width=100)
@@ -167,6 +168,7 @@ def open_admin_dashboard(root_window, username):
             tree.heading("No", text="No", anchor=CENTER)
             tree.heading("Nama", text="Nama", anchor=CENTER)
             tree.heading("Alamat", text="Alamat", anchor=CENTER)
+            tree.heading("Jenis Kelamin", text="Jenis Kelamin", anchor=CENTER)
             tree.heading("Nilai UN", text="Nilai UN", anchor=CENTER)
             tree.heading("Nilai US", text="Nilai US", anchor=CENTER)
             tree.heading("Rata-Rata", text="Rata-Rata", anchor=CENTER)
@@ -180,7 +182,7 @@ def open_admin_dashboard(root_window, username):
 
                 for i, pendaftar in enumerate(all_pendaftar_data):
                     nama = pendaftar.get("nama_lengkap", "N/A")
-                    # Untuk alamat, kita bisa gabungkan tempat lahir dan asal sekolah sebagai placeholder
+                    jenis_kelamin = pendaftar.get("jenis_kelamin", "N/A")
                     alamat = f"{pendaftar.get('tempat_lahir', '')}, {pendaftar.get('asal_sekolah', '')}"
                     nilai_un = pendaftar.get("nilai_ujian_nasional", 0.0)
                     nilai_us = pendaftar.get("nilai_ujian_sekolah", 0.0)
@@ -197,12 +199,13 @@ def open_admin_dashboard(root_window, username):
                     elif status == "Tidak Lulus":
                         display_status = "Tidak Lolos"
                     elif status == "Ditolak":
-                        display_status = "Ditolak Admin"
+                        display_status = "Ditolak"
 
                     tree.insert("", END, values=(
                         i + 1, 
                         nama, 
                         alamat, 
+                        jenis_kelamin,
                         nilai_un, 
                         nilai_us, 
                         f"{rata_rata:.2f}", # Format rata-rata 2 angka di belakang koma
@@ -236,12 +239,13 @@ def open_admin_dashboard(root_window, username):
             tree_scroll_y.config(command=tree.yview)
             tree_scroll_x.config(command=tree.xview)
 
-            tree["columns"] = ("Pilih", "ID", "Username", "Nama Lengkap", "Asal Sekolah", "Nilai US", "Nilai UN", "Status")
+            tree["columns"] = ("Pilih", "ID", "Username", "Nama Lengkap", "Jenis Kelamin", "Asal Sekolah", "Nilai US", "Nilai UN", "Status")
             tree.column("#0", width=0, stretch=NO) 
             tree.column("Pilih", anchor=CENTER, width=50, minwidth=50, stretch=NO)
             tree.column("ID", anchor=CENTER, width=50)
             tree.column("Username", anchor=W, width=100) 
             tree.column("Nama Lengkap", anchor=W, width=150)
+            tree.column("Jenis Kelamin", anchor=CENTER, width=100)
             tree.column("Asal Sekolah", anchor=W, width=150)
             tree.column("Nilai US", anchor=CENTER, width=80)
             tree.column("Nilai UN", anchor=CENTER, width=80)
@@ -252,6 +256,7 @@ def open_admin_dashboard(root_window, username):
             tree.heading("ID", text="ID", anchor=CENTER)
             tree.heading("Username", text="Username", anchor=CENTER)
             tree.heading("Nama Lengkap", text="Nama Lengkap", anchor=CENTER)
+            tree.heading("Jenis Kelamin", text="Jenis Kelamin", anchor=CENTER)
             tree.heading("Asal Sekolah", text="Asal Sekolah", anchor=CENTER)
             tree.heading("Nilai US", text="Nilai US", anchor=CENTER)
             tree.heading("Nilai UN", text="Nilai UN", anchor=CENTER)
@@ -298,7 +303,7 @@ def open_admin_dashboard(root_window, username):
                 
                 conn = database.get_db_connection()
                 cursor = conn.cursor()
-                cursor.execute("SELECT id, username, nama_lengkap, asal_sekolah, nilai_ujian_sekolah, nilai_ujian_nasional, status_pendaftaran FROM pendaftar")
+                cursor.execute("SELECT id, username, nama_lengkap, jenis_kelamin, asal_sekolah, nilai_ujian_sekolah, nilai_ujian_nasional, status_pendaftaran FROM pendaftar")
                 rows = cursor.fetchall()
                 conn.close()
 
@@ -307,7 +312,8 @@ def open_admin_dashboard(root_window, username):
                         "", 
                         row["id"], 
                         row["username"], 
-                        row["nama_lengkap"], 
+                        row["nama_lengkap"],
+                        row["jenis_kelamin"],
                         row["asal_sekolah"], 
                         row["nilai_ujian_sekolah"], 
                         row["nilai_ujian_nasional"], 
@@ -468,7 +474,7 @@ def open_admin_dashboard(root_window, username):
                     elif status == "Tidak Lulus":
                         display_status = "Tidak Lolos"
                     elif status == "Ditolak":
-                        display_status = "Ditolak Admin"
+                        display_status = "Ditolak"
 
                     tree.insert("", END, values=(
                         i + 1, 
