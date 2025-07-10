@@ -10,8 +10,8 @@ Python desktop application using Tkinter for **user registration**. Users can re
 - Save data in PDF and EXCEL/CSV formats
 - Modular code structure: GUI, logic, and data storage
 
-## 🚀 How to Run
-python main.py
+## 🚀 How to use
+Read the documentation in file "Cara Penggunaan.txt"
 
 ## 🛠️ Installation
 ```bash
