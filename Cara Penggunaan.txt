@@ -1,12 +1,13 @@
 Silahkan ikuti panduan berikut demi kelancaran proses penggunaan aplikasi:
 
 #### Peanduan Menjalankan Aplikasi ####
-1. Jalankan aplikasi degan kode "python main.py" pada terminal vscode sesuai lokasi 
+1. install requirement reportlab (pip install reportlab)
+2. Jalankan aplikasi degan kode "python main.py" pada terminal vscode sesuai lokasi 
     penyimpanan folder. sebagai contoh "D:\CATATAN KULIAH\Semester 6\Pemrograman Visual\Project UAS\realproject> python main.py"
-2. ketikkan perintah "python main.py" (pada langkah nomor 1) untuk mulai menjalankan aplikasi.
-3. jika terdapat error silahkan melakukan download package yang dibutuhkan sesuai yang tertera 
+3. ketikkan perintah "python main.py" (pada langkah nomor 1) untuk mulai menjalankan aplikasi.
+4. jika terdapat error silahkan melakukan download package yang dibutuhkan sesuai yang tertera 
     pada pesan error (contoh: pip install pillow)
-4. jika terjadi masalah (error terus berlanjut) silahkan hubungi pembuat aplikasi
+5. jika terjadi masalah (error terus berlanjut) silahkan hubungi pembuat aplikasi
 
 
 #### Panduan Pembuatan Akun Admin ####
