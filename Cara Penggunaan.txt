@@ -1,13 +1,19 @@
 Silahkan ikuti panduan berikut demi kelancaran proses penggunaan aplikasi:
 
 #### Peanduan Menjalankan Aplikasi ####
-1. install requirement reportlab (pip install reportlab)
+1. install (wajib) requirement reportlab, cutomtkinter, tkcalendar (contoh: pip install reportlab)
+
 2. Jalankan aplikasi degan kode "python main.py" pada terminal vscode sesuai lokasi 
     penyimpanan folder. sebagai contoh "D:\CATATAN KULIAH\Semester 6\Pemrograman Visual\Project UAS\realproject> python main.py"
+
 3. ketikkan perintah "python main.py" (pada langkah nomor 1) untuk mulai menjalankan aplikasi.
-4. jika terdapat error silahkan melakukan download package yang dibutuhkan sesuai yang tertera 
+
+4. Tunggu hingga aplikasi terbuka (terkadang bisa lama tergantung spek laptop)
+
+5. jika terdapat error silahkan melakukan download package yang dibutuhkan sesuai yang tertera 
     pada pesan error (contoh: pip install pillow)
-5. jika terjadi masalah (error terus berlanjut) silahkan hubungi pembuat aplikasi
+
+6. jika terjadi masalah (error terus berlanjut) silahkan hubungi pembuat aplikasi
 
 
 #### Panduan Pembuatan Akun Admin ####
@@ -15,12 +21,16 @@ Akun default untuk admin (email: admin@gmail.com - password: 12345)
 
 Jika pengguna ingin membuat akun admin baru, silahkan ikuti langkah-langkah berikut:
 1. Silahkan daftar seperti biasa pada halaman registrasi
+
 2. Kami menyarankan pengguna menggunakan aplikasi tableplus untuk mengakses databse (mahasiswa.db)
+
 3. Setelah melakukan registrasi dan mengakses database beserta tabel menggunakan aplikasi tableplus,
     silahkan ubah atribut level pada tabel users di aplikasi tableplus dari siswa menjadi admin.
     atau bisa lansung ubah dari kode editor masing-masing jika memungkinkan mengubah atribut pada tabel users
     dalam database mahasiswa.
+
 4. Atribut yang diubah merupakan atribut yang ada pada database mahasiswa.db kemudian tabel users (bukan isi kode dari database.py)
+
 5. Jika atributnya sudah diubah maka akun tersebut secara otomatis menjadi akun admin,
     dan secara otomatis akan mengarahkan ke dahsboard/halaman admin.
 
@@ -28,3 +38,49 @@ Jika pengguna ingin membuat akun admin baru, silahkan ikuti langkah-langkah beri
 ####### Jika ada pertanyaan terkait aplikasi silahkan hubungi pembuat aplikasi ##########
 
 ############ SELAMAT MENGGUNAKAN APLIKASI PENDAFTARAN SISWA BARU TINGKAT SMA ##########
+
+
+
+
+### ENGLISH VERSION ###
+Please follow these instructions to ensure a smooth application usage:
+
+#### Application Run Guide ####
+1. Install (mandatory) the requirements for reportlab, customtkinter, and tkcalendar (e.g., pip install reportlab).
+
+2. Run the application with the code "python main.py" in the VS Code terminal according to the folder location.
+
+    For example, "D:\LECTURE NOTES\Semester 6\Visual Programming\UAS Project\realproject> python main.py".
+
+3. Type the command "python main.py" (in step 1) to start the application.
+
+4. Wait for the application to open (this can take a while depending on your laptop's specifications).
+
+5. If you encounter an error, please download the required package as indicated in the error message (e.g., pip install tkcalendar).
+
+6. If you encounter problems (the error persists), please contact the application developer.
+
+
+#### Admin Account Creation Guide ####
+Default account for admin (email: admin@gmail.com - password: 12345)
+
+If a user wants to create a new admin account, please follow these steps:
+1. Register as usual on the registration page.
+
+2. We recommend using the TablePlus application to access the database (mahasiswa.db).
+
+3. After registering and accessing the database and tables using the TablePlus application,
+please change the level attribute in the users table in the TablePlus application from student to admin.
+
+You can also change the attribute directly from your code editor if possible by changing the attribute in the users table in the student database.
+
+4. The attributes to be changed are those in the student.db database and the users table (not the code content in database.py).
+
+5. Once the attribute has been changed, the account automatically becomes an admin account,
+and will automatically redirect to the dashboard/admin page.
+
+
+####### Hopefully users understand and comprehend the steps above ###########
+###### If you have any questions regarding the application, please contact the application developer ##########
+
+############ GOOD LUCK USING THE HIGH SCHOOL NEW STUDENT REGISTRATION APPLICATION ###########
