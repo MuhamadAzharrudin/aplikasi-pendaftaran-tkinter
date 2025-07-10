@@ -1,7 +1,7 @@
 Silahkan ikuti panduan berikut demi kelancaran proses penggunaan aplikasi:
 
 #### Peanduan Menjalankan Aplikasi ####
-1. install (wajib) requirement reportlab, cutomtkinter, tkcalendar (contoh: pip install reportlab)
+1. install (wajib) requirement reportlab, customtkinter, tkcalendar (contoh: pip install reportlab)
 
 2. Jalankan aplikasi degan kode "python main.py" pada terminal vscode sesuai lokasi 
     penyimpanan folder. sebagai contoh "D:\CATATAN KULIAH\Semester 6\Pemrograman Visual\Project UAS\realproject> python main.py"
